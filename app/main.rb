@@ -14,6 +14,13 @@ class MainApp < Sinatra::Base
     def require_authorization
       redirect to('/login') unless !!session[:token]
     end
+
+    def parse_github_link(link)
+      link_re = /github\.com\/(?<user>[^\/]+)\/(?<repo>[^\/]+)/
+      match = link.to_s.match(/github\.com\/(?<user>[^\/]+)\/(?<repo>[^\/]+)/)
+      raise ArgumentError unless match[:user] && match[:repo]
+      [match[:user], match[:repo]]
+    end
   end
 
   get '/' do
@@ -23,8 +30,9 @@ class MainApp < Sinatra::Base
 
   get '/search' do
     require_authorization
-    @query = params[:q]
+    user, repo = parse_github_link(params[:q])
     github = Github.new(API_PARAMS.merge oauth_token: session[:token])
+    github.repos.contributors(user, repo)
     haml :show
   end
 
