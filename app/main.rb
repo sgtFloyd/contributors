@@ -7,5 +7,8 @@ class MainApp < Sinatra::Base
     haml :index
   end
 
+  get '/search' do
+  end
+
   run! if app_file == $0
 end

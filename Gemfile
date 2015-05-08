@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 # Tells rvm and heroku which Ruby to use
-ruby '2.1.1'
+ruby '2.2.2'
 
 gem 'sinatra', '~> 1.4.5'
 gem 'github_api', '~> 0.12.3'

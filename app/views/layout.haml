@@ -1,5 +1,15 @@
 %html{lang: 'en'}
   %head
+    %meta{charset: 'utf-8'}
+    %meta{'http-equiv' => 'X-UA-Compatible', content: 'IE=edge'}
+    %meta{name: 'viewport', content: 'width=device-width', 'initial-scale' => '1'}
+
     %link{type: 'image/x-icon', rel: 'shortcut icon', href: '/images/favicon.png'}
-    %link{type: 'text/css', rel: 'stylesheet', href: '/stylesheets/main.css'}
-  = yield
+    %link{href: '/css/bootstrap.min.css', rel: 'stylesheet'}
+
+  %body
+    = yield
+
+  %footer
+    %script{src: 'https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js'}
+    %script{src: '/js/bootstrap.min.js'}
