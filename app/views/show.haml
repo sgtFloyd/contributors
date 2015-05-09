@@ -1,22 +1,52 @@
-%h1
-  %span.glyphicon.glyphicon-file{'aria-hidden' => 'true'}
-  %a{href: @repository.owner.html_url, target: '_blank'} #{@repository.owner.login}
-  \/
-  %a{href: @repository.html_url, target: '_blank'} #{@repository.name}
+.container
+  %h1
+    %span.glyphicon.glyphicon-file{'aria-hidden' => 'true'}
+    %a{href: @repository.owner.html_url, target: '_blank'} #{@repository.owner.login}
+    \/
+    %a{href: @repository.html_url, target: '_blank'} #{@repository.name}
 
-%table.table.table-striped.table-condensed
-  %thead
-    %th
-    %th
-    %th Name
-  %tbody
-    - @contributors.each do |user|
-      %tr
-        %td
-          %span.glyphicon.glyphicon-user{'aria-hidden' => 'true'}
-        %td
-          - is_owner = @repository.owner.login == user.login
-          %a{href: user.html_url} #{user.login}
-          #{"(Owner)" if is_owner}
-        %td
-          %strong #{user.name}
+  %hr
+  %h3 Top Contributors
+  %table.table.table-striped.table-condensed
+    %thead
+      %th=# Icon
+      %th=# Username
+      %th Name
+      %th Location
+    %tbody
+      - @top_contributors.each do |user|
+        %tr
+          %td
+            %span.glyphicon.glyphicon-user{'aria-hidden' => 'true'}
+          %td
+            - is_owner = @repository.owner.login == user.login
+            %a{href: user.html_url} #{user.login}
+            #{"(Owner)" if is_owner}
+          %td
+            %strong= user.name if user.respond_to?(:name)
+          %td= user.location if user.respond_to?(:location)
+
+  - if @pull_requests.any?
+    %hr
+    %h3 Recent Contributors
+    %table.table.table-striped.table-condensed
+      %thead
+        %th=# Icon
+        %th=# Username
+        %th Name
+        %th Location
+        %th Pull Request
+      %tbody
+        - @pull_requests.each do |pull_request|
+          %tr
+            %td
+              %span.glyphicon.glyphicon-user{'aria-hidden' => 'true'}
+              %td
+                - is_owner = @repository.owner.login == pull_request.user.login
+                %a{href: pull_request.user.html_url} #{pull_request.user.login}
+                #{"(Owner)" if is_owner}
+              %td
+                %strong= pull_request.user.name if pull_request.user.respond_to?(:name)
+              %td=pull_request.user.location if pull_request.user.respond_to?(:location)
+              %td
+                %a{href: pull_request.html_url} #{pull_request.title}
