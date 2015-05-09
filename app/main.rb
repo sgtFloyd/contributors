@@ -11,6 +11,10 @@ class MainApp < Sinatra::Base
   enable :sessions
 
   helpers do
+    def github(options={})
+      @_github ||= Github.new(API_PARAMS.merge(options))
+    end
+
     def require_authorization
       redirect to('/login') unless !!session[:token]
     end
@@ -31,13 +35,15 @@ class MainApp < Sinatra::Base
   get '/search' do
     require_authorization
     user, repo = parse_github_link(params[:q])
-    github = Github.new(API_PARAMS.merge oauth_token: session[:token])
-    github.repos.contributors(user, repo)
+    @repository = github(oauth_token: session[:token]).repos.get(user, repo)
+    @contributors = github.repos.contributors(user, repo).map do |contributor|
+      github.users.get user: contributor.login
+    end
     haml :show
   end
 
   get '/login' do
-    @auth_url = Github.new(API_PARAMS).authorize_url
+    @auth_url = github.authorize_url
     haml :login
   end
 
@@ -47,7 +53,7 @@ class MainApp < Sinatra::Base
   end
 
   get '/callback' do
-    token = Github.new(API_PARAMS).get_token(params[:code])
+    token = github.get_token(params[:code])
     session[:token] = token.token
     redirect to('/')
   end
