@@ -1,6 +1,7 @@
 require 'rubygems'
 require 'bundler'
 Bundler.require(:default)
+require_relative 'controllers/auth_controller'
 
 API_PARAMS = {
   client_id: ENV['GITHUB_CLIENT_ID'],
@@ -8,17 +9,11 @@ API_PARAMS = {
 }
 
 class MainApp < Sinatra::Base
+  register AuthController
+
   enable :sessions
 
   helpers do
-    def authorized?
-      !!session[:token]
-    end
-
-    def require_authorization
-      redirect to('/login') unless authorized?
-    end
-
     def github(options={})
       options[:oauth_token] ||= session[:token] if authorized?
       @_github ||= Github.new(API_PARAMS.merge(options))
@@ -57,22 +52,6 @@ class MainApp < Sinatra::Base
     @top_contributors = top_contributors_for @repository
     @pull_requests = pull_requests_for @repository
     haml :show
-  end
-
-  get '/login' do
-    @auth_url = github.authorize_url
-    haml :login
-  end
-
-  get '/logout' do
-    session.delete(:token)
-    redirect to('/')
-  end
-
-  get '/callback' do
-    token = github.get_token(params[:code])
-    session[:token] = token.token
-    redirect to('/')
   end
 
   run! if app_file == $0
