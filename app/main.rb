@@ -36,7 +36,6 @@ class MainApp < Sinatra::Base
     haml :index
   end
 
-  # TO INCLUDE: Organizations, Hirable
   get '/search' do
     require_authorization
     @repository = RepoStore.find_by_query params[:q].to_s

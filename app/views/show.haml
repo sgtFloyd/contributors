@@ -25,12 +25,17 @@
             #{"(Owner)" if is_owner}
           %td
             %strong= user.name if user.respond_to?(:name)
+            - if user.respond_to?(:hireable) && user.hireable
+              - tooltip_data = {toggle: 'tooltip', placement: 'top', title: 'Available for Hire'}
+              %span.glyphicon.glyphicon-star-empty{'aria-hidden' => 'true', data: tooltip_data}
+
           %td= user.location if user.respond_to?(:location)
           %td
             - if user.respond_to?(:organizations)
               - user.organizations.each do |org|
-                - org_data = {toggle: 'tooltip', placement: 'top', title: org.login}
-                %img{src: org.avatar_url, height: '22', width: '22', data: org_data}
+                - tooltip_data = {toggle: 'tooltip', placement: 'top', title: org.login}
+                %a{href: "https://github.com/#{org.login}"}
+                  %img{src: org.avatar_url, height: '22', width: '22', data: tooltip_data}
 
   - if @pull_requests.any?
     %hr
@@ -44,15 +49,19 @@
         %th Pull Request
       %tbody
         - @pull_requests.each do |pull_request|
+          - user = pull_request.user
           %tr
             %td
               %span.glyphicon.glyphicon-user{'aria-hidden' => 'true'}
               %td
-                - is_owner = @repository.owner.login == pull_request.user.login
-                %a{href: pull_request.user.html_url} #{pull_request.user.login}
+                - is_owner = @repository.owner.login == user.login
+                %a{href: user.html_url} #{user.login}
                 #{"(Owner)" if is_owner}
               %td
-                %strong= pull_request.user.name if pull_request.user.respond_to?(:name)
-              %td=pull_request.user.location if pull_request.user.respond_to?(:location)
+                %strong= user.name if user.respond_to?(:name)
+                - if user.respond_to?(:hireable) && user.hireable
+                  - tooltip_data = {toggle: 'tooltip', placement: 'top', title: 'Available for Hire'}
+                  %span.glyphicon.glyphicon-star-empty{'aria-hidden' => 'true', data: tooltip_data}
+              %td=user.location if user.respond_to?(:location)
               %td
                 %a{href: pull_request.html_url} #{pull_request.title}
