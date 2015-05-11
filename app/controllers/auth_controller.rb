@@ -12,7 +12,7 @@ module AuthController
     end
 
     app.get '/login' do
-      @auth_url = github.authorize_url
+      @auth_url = GithubStore.github.authorize_url
       haml :login
     end
 
@@ -22,7 +22,7 @@ module AuthController
     end
 
     app.get '/callback' do
-      token = github.get_token(params[:code])
+      token = GithubStore.github.get_token(params[:code])
       session[:token] = token.token
       redirect to('/')
     end

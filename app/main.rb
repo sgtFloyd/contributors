@@ -20,11 +20,6 @@ class MainApp < Sinatra::Base
   enable :sessions
 
   helpers do
-    def github(options={})
-      options[:oauth_token] ||= session[:token] if authorized?
-      @_github ||= Github.new(API_PARAMS.merge(options))
-    end
-
     def parse_github_link(link)
       match = link.to_s.match(/github\.com\/(?<user>[^\/]+)\/(?<repo>[^\/]+)/)
       raise ArgumentError unless match[:user] && match[:repo]
@@ -32,13 +27,13 @@ class MainApp < Sinatra::Base
     end
 
     def top_contributors_for(repository, limit: 5)
-      contributors = github.repos.contributors(repository.owner.login, repository.name)
+      contributors = GithubStore.github.repos.contributors(repository.owner.login, repository.name)
       contributors.first(limit).map{|contributor| UserStore.find(contributor.login)}
     end
 
     def pull_requests_for(repository, limit: 20)
       filter = { state: 'closed', sort: 'updated' }
-      pull_requests = github.pulls.list(repository.owner.login, repository.name, filter)
+      pull_requests = GithubStore.github.pulls.list(repository.owner.login, repository.name, filter)
       pull_requests.first(limit).each do |pull_request|
         pull_request.user = UserStore.find(pull_request.user.login)
       end
