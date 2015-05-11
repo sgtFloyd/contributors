@@ -5,7 +5,7 @@ class RepoStore < GithubStore
 
   def self.find_by_query(input)
     match = input.match(/#{input['github.com/']}(?<user>[^\/]+)\/(?<repo>[^\/]+)/)
-    raise ArgumentError unless match[:user] && match[:repo]
+    raise ArgumentError unless match
     self.find(match[:user], match[:repo])
   end
 

@@ -17,9 +17,18 @@ API_PARAMS = {
 class MainApp < Sinatra::Base
   register AuthController
   enable :sessions
+  set :show_exceptions, false
 
   before do
     GithubStore.authenticate! session[:token]
+  end
+
+  error do
+    session[:error] = {
+      class: env['sinatra.error'].class.name,
+      message: env['sinatra.error'].message
+    }
+    redirect to('/')
   end
 
   get '/' do
