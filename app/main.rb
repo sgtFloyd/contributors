@@ -1,7 +1,13 @@
 require 'rubygems'
 require 'bundler'
 Bundler.require(:default)
-require_relative 'controllers/auth_controller'
+
+$LOAD_PATH.unshift File.expand_path('..', File.dirname(__FILE__))
+require 'lib/memoizer'
+require 'app/controllers/auth_controller'
+require 'app/domain/github_store'
+require 'app/domain/repo_store'
+require 'app/domain/user_store'
 
 API_PARAMS = {
   client_id: ENV['GITHUB_CLIENT_ID'],
@@ -27,16 +33,20 @@ class MainApp < Sinatra::Base
 
     def top_contributors_for(repository, limit: 5)
       contributors = github.repos.contributors(repository.owner.login, repository.name)
-      contributors.first(limit).map{|contributor| github.users.get(user: contributor.login)}
+      contributors.first(limit).map{|contributor| UserStore.find(contributor.login)}
     end
 
     def pull_requests_for(repository, limit: 20)
       filter = { state: 'closed', sort: 'updated' }
       pull_requests = github.pulls.list(repository.owner.login, repository.name, filter)
       pull_requests.first(limit).each do |pull_request|
-        pull_request.user = github.users.get(user: pull_request.user.login)
+        pull_request.user = UserStore.find(pull_request.user.login)
       end
     end
+  end
+
+  before do
+    GithubStore.authenticate! session[:token]
   end
 
   get '/' do
@@ -47,8 +57,7 @@ class MainApp < Sinatra::Base
   # TO INCLUDE: Organizations, Hirable
   get '/search' do
     require_authorization
-    user, repo = parse_github_link(params[:q])
-    @repository = github.repos.get(user, repo)
+    @repository = RepoStore.find *parse_github_link(params[:q])
     @top_contributors = top_contributors_for @repository
     @pull_requests = pull_requests_for @repository
     haml :show
