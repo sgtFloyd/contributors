@@ -13,6 +13,7 @@
       %th=# Username
       %th Name
       %th Location
+      %th Organizations
     %tbody
       - @top_contributors.each do |user|
         %tr
@@ -25,6 +26,11 @@
           %td
             %strong= user.name if user.respond_to?(:name)
           %td= user.location if user.respond_to?(:location)
+          %td
+            - if user.respond_to?(:organizations)
+              - user.organizations.each do |org|
+                - org_data = {toggle: 'tooltip', placement: 'top', title: org.login}
+                %img{src: org.avatar_url, height: '20', width: '20', data: org_data}
 
   - if @pull_requests.any?
     %hr
