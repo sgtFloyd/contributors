@@ -19,11 +19,10 @@
         %tr
           %td
             %span.glyphicon.glyphicon-user{'aria-hidden' => 'true'}
-          %td
-            - is_owner = @repository.owner.login == user.login
+          %td.text-nowrap
             %a{href: user.html_url} #{user.login}
-            #{"(Owner)" if is_owner}
-          %td
+            #{"(Owner)" if @repository.owner.login == user.login}
+          %td.text-nowrap
             %strong= user.name if user.respond_to?(:name)
             - if user.respond_to?(:hireable) && user.hireable
               - tooltip_data = {toggle: 'tooltip', placement: 'top', title: 'Available for Hire'}
@@ -53,15 +52,14 @@
           %tr
             %td
               %span.glyphicon.glyphicon-user{'aria-hidden' => 'true'}
-              %td
-                - is_owner = @repository.owner.login == user.login
-                %a{href: user.html_url} #{user.login}
-                #{"(Owner)" if is_owner}
-              %td
-                %strong= user.name if user.respond_to?(:name)
-                - if user.respond_to?(:hireable) && user.hireable
-                  - tooltip_data = {toggle: 'tooltip', placement: 'top', title: 'Available for Hire'}
-                  %span.glyphicon.glyphicon-star-empty{'aria-hidden' => 'true', data: tooltip_data}
-              %td=user.location if user.respond_to?(:location)
-              %td
-                %a{href: pull_request.html_url} #{pull_request.title}
+            %td.text-nowrap
+              %a{href: user.html_url} #{user.login}
+              #{"(Owner)" if @repository.owner.login == user.login}
+            %td.text-nowrap
+              %strong= user.name if user.respond_to?(:name)
+              - if user.respond_to?(:hireable) && user.hireable
+                - tooltip_data = {toggle: 'tooltip', placement: 'top', title: 'Available for Hire'}
+                %span.glyphicon.glyphicon-star-empty{'aria-hidden' => 'true', data: tooltip_data}
+            %td= user.location if user.respond_to?(:location)
+            %td
+              %a{href: pull_request.html_url} #{pull_request.title}
