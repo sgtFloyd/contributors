@@ -9,12 +9,7 @@
 
   %body
     - if error = session.delete(:error)
-      .alert.alert-danger{role: 'alert'}
-        %div
-          %span.glyphicon.glyphicon-exclamation-sign{'aria-hidden' => true}
-          #{error[:class]}
-        %div #{error[:message]}
-
+      = haml :_error, layout: false, locals: {error: error}
     = yield
 
   %footer

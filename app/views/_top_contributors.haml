@@ -1,0 +1,30 @@
+%hr
+%h3 Top Contributors
+%table.table.table-striped.table-condensed
+  %thead
+    %th=# Icon
+    %th=# Username
+    %th Name
+    %th Location
+    %th Organizations
+  %tbody
+    - @top_contributors.each do |user|
+      %tr
+        %td
+          %span.glyphicon.glyphicon-user{'aria-hidden' => 'true'}
+        %td.text-nowrap
+          %a{href: user.html_url} #{user.login}
+          #{"(Owner)" if @repository.owner.login == user.login}
+        %td.text-nowrap
+          %strong= user.name if user.respond_to?(:name)
+          - if user.respond_to?(:hireable) && user.hireable
+            - tooltip_data = {toggle: 'tooltip', placement: 'top', title: 'Available for Hire'}
+            %span.glyphicon.glyphicon-star-empty{'aria-hidden' => 'true', data: tooltip_data}
+
+        %td= user.location if user.respond_to?(:location)
+        %td
+          - if user.respond_to?(:organizations)
+            - user.organizations.each do |org|
+              - tooltip_data = {toggle: 'tooltip', placement: 'top', title: org.login}
+              %a{href: "https://github.com/#{org.login}"}
+                %img{src: org.avatar_url, height: '22', width: '22', data: tooltip_data}
