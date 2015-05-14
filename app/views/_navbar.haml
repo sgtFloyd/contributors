@@ -1,0 +1,7 @@
+%nav.navbar.navbar-default{style: "background:none;border:none;margin:0;"}
+  .container-fluid
+    .collapse.navbar-collapse
+      %ul.nav.navbar-nav.navbar-right
+        %li
+          - tooltip_data = {toggle: 'tooltip', placement: 'bottom', title: 'ratelimit'}
+          %button.btn.navbar-btn{type: 'button', data: tooltip_data}= @ratelimit

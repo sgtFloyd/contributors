@@ -16,10 +16,11 @@ API_PARAMS = {
 
 class MainApp < Sinatra::Base
   register AuthController
-  enable :sessions
+  enable :sessions, :logging
   set :show_exceptions, false
 
   before do
+    $logger = request.logger
     GithubStore.authenticate! session[:token]
   end
 
@@ -41,6 +42,7 @@ class MainApp < Sinatra::Base
     @repository = RepoStore.find_by_query params[:q].to_s
     @top_contributors = UserStore.contributors_for @repository
     @pull_requests = RepoStore.pull_requests_for @repository
+    @ratelimit = GithubStore.github.ratelimit_remaining
     haml :show
   end
 

@@ -8,6 +8,8 @@
     %link{href: '/css/bootstrap.min.css', rel: 'stylesheet'}
 
   %body
+    - if @ratelimit
+      = haml :_navbar, layout: false
     - if error = session.delete(:error)
       = haml :_error, layout: false, locals: {error: error}
     = yield
