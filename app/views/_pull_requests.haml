@@ -12,7 +12,8 @@
       - user = pull_request.user
       %tr
         %td
-          %span.glyphicon.glyphicon-user{'aria-hidden' => 'true'}
+          %a{href: user.html_url}
+            %img{src: user.avatar_url, height: '22', width: '22'}
         %td.text-nowrap
           %a{href: user.html_url} #{user.login}
           #{"(Owner)" if @repository.owner.login == user.login}
