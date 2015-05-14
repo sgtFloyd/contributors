@@ -1,6 +1,10 @@
 %nav.navbar.navbar-default{style: "background:none;border:none;margin:0;"}
-  .container-fluid
-    .collapse.navbar-collapse
+  .container
+    .collapse.navbar-collapse{style: 'padding:0;'}
+      %ul.nav.navbar.navbar-left
+        %form.navbar-form.navbar-left{action: '/search', style: 'padding:0;'}
+          .form-group
+            %input.form-control{type: 'text', name: 'q', placeholder: "Enter Github Repo", style: 'width: 300px;'}
       %ul.nav.navbar-nav.navbar-right
         %li
           - tooltip_data = {toggle: 'tooltip', placement: 'bottom', title: 'ratelimit'}
