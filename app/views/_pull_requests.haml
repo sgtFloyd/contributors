@@ -2,8 +2,7 @@
 %h3 Recent Contributors
 %table.table.table-striped.table-condensed
   %thead
-    %th=# Icon
-    %th=# Username
+    %th=# Icon/Username
     %th Name
     %th Location
     %th Pull Request
@@ -11,10 +10,9 @@
     - @pull_requests.each do |pull_request|
       - user = pull_request.user
       %tr
-        %td
-          %a{href: user.html_url}
-            %img{src: user.avatar_url, height: '22', width: '22'}
         %td.text-nowrap
+          %a{href: user.html_url}
+            %img{src: user.avatar_url, height: '22', width: '22', style: 'margin-right: 5px;'}
           %a{href: user.html_url} #{user.login}
           #{"(Owner)" if @repository.owner.login == user.login}
         %td.text-nowrap
