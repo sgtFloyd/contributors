@@ -26,10 +26,8 @@ class MainApp < Sinatra::Base
 
   error do
     err = env['sinatra.error']
-    session[:error] = {
-      class: err.class.name,
-      message: err.message
-    }
+    session[:error] = { class: err.class.name,
+                        message: err.message }
     err.is_a?(Github::Error::Unauthorized) ?
       redirect(to '/logout') : redirect(to '/')
   end

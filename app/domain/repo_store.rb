@@ -5,7 +5,7 @@ class RepoStore < GithubStore
 
   def self.find_by_query(input)
     match = input.match(/#{input['github.com/']}(?<user>[^\/]+)\/(?<repo>[^\/]+)/)
-    raise ArgumentError unless match
+    raise "Enter user and repository separated by a slash (/). Ex: paperlesspost/graphiti" unless match
     self.find(match[:user], match[:repo])
   end
 
